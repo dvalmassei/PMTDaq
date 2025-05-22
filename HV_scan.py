@@ -68,7 +68,7 @@ def main():
         for voltage in [800,1000,10]:
             temp_data = [] #List
             n_events = 0
-            HV.ramp_voltage(voltage)
+            HV.channels[0].ramp_voltage(voltage)
             print(f'Voltage set to {voltage} and reset event count...')
             while n_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
                 wf = digitizer.get_waveforms()
