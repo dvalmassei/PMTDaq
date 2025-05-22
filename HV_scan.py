@@ -15,7 +15,7 @@ import time
 
 def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
    	digitizer.set_sampling_frequency(MHz=2500)
-   	digitizer.set_record_length(512)
+   	digitizer.set_record_length(1024)
    	digitizer.set_max_num_events_BLT(1024)
    	digitizer.set_acquisition_mode('sw_controlled')
    	digitizer.set_ext_trigger_input_mode('disabled')
