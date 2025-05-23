@@ -27,7 +27,8 @@ def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
    	digitizer.set_fast_trigger_DC_offset(V=0)
    	digitizer.set_post_trigger_size(0)
    	for ch in [0]:
-   		digitizer.set_trigger_polarity(channel=ch, edge='falling')
+           digitizer.set_trigger_polarity(channel=ch, edge='falling')
+          
    	print('Digitizer connected with:',digitizer.idn)
 
         
@@ -41,6 +42,7 @@ def convert_dicitonaries_to_data_frame(waveforms:dict,voltage):
 			df['n_channel'] = n_channel
 			df.set_index(['n_event','n_channel'], inplace=True)
 			data.append(df)
+            
 	return pd.concat(data) 
     
     
@@ -53,34 +55,43 @@ def main():
     digitizer.set_max_num_events_BLT(1024) # Override the maximum number of events to be stored in the digitizer's self buffer.
 
 
-
     ########## Turn on HV ##########
+    HV.send_command('SET','ON',CH=0)
     HV.channels[0].ramp_voltage(800, ramp_speed_VperSec=5) #Ramp voltage to 800 V and wait for HV to finish
+    print('HV ready...')
+    
     
     ########## Acquisition ##########
-    
     n_events = 0
     ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS = 1000
     data = [] #Pandas DataFrame
     
     with digitizer:
-        print('Digitizer is enabled! Acquiring data...')
+        print('Digitizer is enabled!')
         for voltage in [800,1000,10]:
             temp_data = [] #List
             n_events = 0
-            HV.channels[0].ramp_voltage(voltage)
-            print(f'Voltage set to {voltage} and reset event count...')
+            HV.channels[0].ramp_voltage(voltage,ramp_speed_VperSec=15)
+            v = HV.get_single_channel_parameter('VMON', 0)
+            i = HV.get_single_channel_parameter('IMON', 0)
+            print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
             while n_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
                 wf = digitizer.get_waveforms()
                 n_events += len(wf)
                 print(f'acquired {n_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage}...')
                 temp_data.append(wf)
-            
+                
             print(f'Collected {n_events} at {voltage} V')
             print('Now appending to DataFrame...')
             data = pd.concat(data,convert_dicitonaries_to_data_frame(temp_data,voltage))
     
     print('Acquisition complete.')
+    
+    
+    ########## Turn off HV ##########
+    HV.send_command('SET', 'VSET', CH=0, VAL=0) #set HV to 0V, but don't wait
+    HV.send_command('SET','OFF',CH=0) #HV will now turn disable after it ramps down, but we can keep working
+    
     print(data)
     
 if __name__ == '__main__':
