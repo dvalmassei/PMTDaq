@@ -63,7 +63,7 @@ def main():
         digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
         with digitizer:
             time.sleep(1) # wait one second
-            digitizer.libCAENDigitizer.CAEN_DGTZ_SendSWtrigger() #trigger the digitizer with the software
+            digitizer.CAEN_DGTZ_SendSWtrigger() #trigger the digitizer with the software
             time.sleep(0.1)
             
         data = digitizer.get_waveforms()
