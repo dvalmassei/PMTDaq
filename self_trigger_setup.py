@@ -90,7 +90,7 @@ def main():
                     keep_going = False #All is good! We will move on
                     break
                 elif (response == 'n'):
-                    dc_offset = input(f'The current DC offset is {dc_offset}. Please enter the new DC offset:')
+                    dc_offset = int(input(f'The current DC offset is {dc_offset}. Please enter the new DC offset:'))
                     keep_going = True #We need to change the DC offset and check again
                     break
                 else:
