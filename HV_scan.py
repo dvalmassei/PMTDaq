@@ -23,8 +23,8 @@ def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
    	digitizer.set_fast_trigger_mode(enabled=True)
    	digitizer.set_fast_trigger_digitizing(enabled=True)
    	digitizer.enable_channels(group_1=True, group_2=False)
-   	digitizer.set_fast_trigger_threshold(22222)
-   	digitizer.set_fast_trigger_DC_offset(V=0)
+   	#digitizer.set_fast_trigger_threshold(22222)
+   	#digitizer.set_fast_trigger_DC_offset(V=0)
    	digitizer.set_post_trigger_size(0)
    	for ch in [0]:
            digitizer.set_trigger_polarity(channel=ch, edge='falling')
@@ -76,6 +76,7 @@ def main():
             i = HV.get_single_channel_parameter('IMON', 0)
             print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
             while n_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
+                time.sleep(.05) #ask for data every ~50 ms
                 wf = digitizer.get_waveforms()
                 n_events += len(wf)
                 print(f'acquired {n_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage}...')
@@ -90,8 +91,9 @@ def main():
     
     ########## Turn off HV ##########
     HV.send_command('SET', 'VSET', CH=0, VAL=0) #set HV to 0V, but don't wait
-    HV.send_command('SET','OFF',CH=0) #HV will now turn disable after it ramps down, but we can keep working
+    HV.send_command('SET','OFF',CH=0) #HV will now disable after it ramps down, but we can keep working
     
+    ########## Save the data to a file ##########
     print(data)
     
 if __name__ == '__main__':
