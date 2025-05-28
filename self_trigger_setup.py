@@ -105,7 +105,7 @@ def main():
         
         with digitizer:
             time.sleep(1) # wait one second
-            libCAENDigitizer.CAEN_DGTZ_SendSWtrigger() #trigger the digitizer with the software
+            libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
             time.sleep(0.1)
         
         data = digitizer.get_waveforms()
