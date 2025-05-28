@@ -41,7 +41,7 @@ def edit_bit(hex_value, bit_position, set_bit=True):
 
 def main():
     try:
-        libCAENDigitizer = CDLL('usr/lib/libCAENDigitizer.so')
+        libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
         
         HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM1') # Open the connection.
         print('HV connected with:',HV.idn)
