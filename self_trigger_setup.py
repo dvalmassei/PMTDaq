@@ -80,7 +80,7 @@ def main():
             data = convert_dicitonaries_to_data_frame(data, 900)
             print(data)
             
-            plt.plot(data.iloc[:,[1]]['Time (s)'],data.iloc[:,[1]]['Amplitude (V)'])
+            plt.plot(data['Time (s)'],data['Amplitude (V)'])
             plt.show()
         
             ##### Check if the baseline looks good #####
