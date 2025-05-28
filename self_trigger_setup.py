@@ -7,8 +7,8 @@ Created on Fri May 23 08:24:07 2025
 """
 
 from CAENpy.CAENDigitizer import CAEN_DT5742_Digitizer
-from CAENpy.CAENDigitizer import libCAENDigitizer as libCAENDigitizer
 from CAENpy.CAENDesktopHighVoltagePowerSupply import CAENDesktopHighVoltagePowerSupply
+from ctypes import CDLL
 import pandas as pd
 import numpy
 import time
@@ -41,6 +41,8 @@ def edit_bit(hex_value, bit_position, set_bit=True):
 
 def main():
     try:
+        libCAENDigitizer = CDLL('usr/lib/libCAENDigitizer.so')
+        
         HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM1') # Open the connection.
         print('HV connected with:',HV.idn)
         digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
@@ -66,7 +68,7 @@ def main():
             digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
             with digitizer:
                 time.sleep(1) # wait one second
-                libCAENDigitizer.CAEN_DGTZ_SendSWtrigger() #trigger the digitizer with the software
+                libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
                 time.sleep(0.1)
                 
             data = digitizer.get_waveforms()
@@ -123,6 +125,7 @@ def main():
         print(f'Old value of register 0x1080: {old_0x1080_value:08X}')
         self_trigger_threashold = input('Please input the threshold value in decimal [0:4095]:')
         digitizer.write_register(0x1080, self_trigger_threashold) #NOTE: this is a quick trick that we can use right now because we are only working with Ch.0 read register descriptions for more info
+        
         
         ########## Enable Self Trigger ##########
         old_0x10A8_value = digitizer.read_register(0x10A8)
