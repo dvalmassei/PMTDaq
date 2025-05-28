@@ -132,7 +132,7 @@ def main():
         print(f'Old value of register 0x10A8: {old_0x10A8_value:08X}')
         new_0x10A8_value = edit_bit(old_0x10A8_value, 0, set_bit=True)
         print(f'Writing {new_0x10A8_value:08X} at register 0x10A8.')
-        digitizer.write(new_0x10A8_value,0x10A8)
+        digitizer.write_register(new_0x10A8_value,0x10A8)
         print('Self trigger enabled for Ch.0')
         
         ########## Revert to Output Mode ##########
