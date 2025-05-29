@@ -66,6 +66,7 @@ def main():
         
         ########## Acquisition in Output Mode (default) w/ software trigger ##########
         dc_offset = float(digitizer.get_channel_DC_offset(channel=0))
+        print(dc_offset)
         
         keep_going = True
         while keep_going:
