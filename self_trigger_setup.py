@@ -50,7 +50,7 @@ def main():
         HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
         print('HV connected with:',HV.idn)
         digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
-        #configure_digitizer(digitizer)
+        configure_digitizer(digitizer)
         digitizer.set_max_num_events_BLT(1024) # Override the maximum number of events to be stored in the digitizer's self buffer.
     
     
