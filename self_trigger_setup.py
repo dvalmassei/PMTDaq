@@ -65,7 +65,7 @@ def main():
         print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
         
         ########## Acquisition in Output Mode (default) w/ software trigger ##########
-        dc_offset = digitizer.get_channel_DC_offset(channel=0)
+        dc_offset = float(digitizer.get_channel_DC_offset(channel=0))
         
         keep_going = True
         while keep_going:
@@ -157,9 +157,9 @@ def main():
         
     finally:
         ########## Turn off HV ##########
-        HV.send_command('SET', 'VSET', CH=0, VAL=0) #set HV to 0V, but don't wait
-        HV.send_command('SET','OFF',CH=0) #HV will now disable after it ramps down, but we can keep working
-        print('HV turning off...')
+        #HV.send_command('SET', 'VSET', CH=0, VAL=0) #set HV to 0V, but don't wait
+        #HV.send_command('SET','OFF',CH=0) #HV will now disable after it ramps down, but we can keep working
+        #print('HV turning off...')
     
     
 if __name__ == '__main__':
