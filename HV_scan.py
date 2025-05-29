@@ -44,6 +44,34 @@ def convert_dicitonaries_to_data_frame(waveforms:dict,voltage):
 			data.append(df)
             
 	return pd.concat(data) 
+
+def edit_bit(hex_value, bit_position, set_bit=True):
+    """
+    Edit a single bit in a 32-bit hexadecimal value.
+
+    Args:
+        hex_value (str): A string representing the 32-bit hex value (e.g., '0x12345678').
+        bit_position (int): Bit position to modify (0 = least significant bit, 31 = most significant).
+        set_bit (bool): If True, set the bit to 1. If False, clear the bit to 0.
+
+    Returns:
+        str: New 32-bit hexadecimal value as a string (e.g., '0x123456F8').
+    """
+    if not (0 <= bit_position < 32):
+        raise ValueError("bit_position must be between 0 and 31")
+
+    value = hex_value
+
+    if set_bit:
+        value |= (1 << bit_position) #bitwise OR comparisson
+    else:
+        value &= ~(1 << bit_position) #bitwise AND comparisson
+
+    return value
+
+def check_error_code(code):
+    if code != 0:
+        raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
 def main():
@@ -52,6 +80,29 @@ def main():
     print('HV connected with:',HV.idn)
     digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
     configure_digitizer(digitizer)
+    
+        ##### Set Self Trigger Threshold #####
+    old_0x1080_value = digitizer.read_register(0x1080)
+    print(f'Old value of register 0x1080: {old_0x1080_value:08X}')
+    self_trigger_threshold = 256
+    digitizer.write_register(0x1080, self_trigger_threshold) #NOTE: this is a quick trick that we can use right now because we are only working with Ch.0 read register descriptions for more info
+
+    
+        ##### Enable Self Trigger #####
+    old_0x10A8_value = digitizer.read_register(0x10A8)
+    print(f'Old value of register 0x10A8: {old_0x10A8_value:08X}')
+    new_0x10A8_value = edit_bit(old_0x10A8_value, 0, set_bit=True)
+    print(f'Writing {new_0x10A8_value:08X} at register 0x10A8.')
+    digitizer.write_register(0x10A8,new_0x10A8_value)
+    print('Self trigger enabled for Ch.0')
+    
+        ##### Revert to Output Mode #####
+    old_0x8000_value = digitizer.read_register(0X8000)
+    print(f'Old value of register 0x8000: {old_0x8000_value:08X}')
+    new_0x8000_value = edit_bit(old_0x8000_value, 13, set_bit=False)
+    print(f'Writing {new_0x8000_value:08X} at register 0x8000.')
+    digitizer.write_register(0x8000, new_0x8000_value)
+    print('Ready for Self-Triggered acquisition in Output Mode')
     digitizer.set_max_num_events_BLT(1024) # Override the maximum number of events to be stored in the digitizer's self buffer.
 
 
