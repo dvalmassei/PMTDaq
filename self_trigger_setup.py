@@ -84,6 +84,7 @@ def main():
             else:
                 print('Collected at least 1 event')
                 
+            print(data)
             data = convert_dicitonaries_to_data_frame(data, 900)
             print(data)
             
