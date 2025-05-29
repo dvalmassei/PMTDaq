@@ -39,6 +39,10 @@ def edit_bit(hex_value, bit_position, set_bit=True):
 
     return value
 
+def check_error_code(code):
+    if code != 0:
+        raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
+    
 def main():
     try:
         libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
@@ -46,7 +50,7 @@ def main():
         HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM1') # Open the connection.
         print('HV connected with:',HV.idn)
         digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
-        configure_digitizer(digitizer)
+        #configure_digitizer(digitizer)
         digitizer.set_max_num_events_BLT(1024) # Override the maximum number of events to be stored in the digitizer's self buffer.
     
     
@@ -68,8 +72,9 @@ def main():
             digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
             with digitizer:
                 time.sleep(1) # wait one second
-                libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
+                code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
                 time.sleep(0.1)
+                check_error_code(code)
                 
             data = digitizer.get_waveforms()
             
@@ -105,8 +110,9 @@ def main():
         
         with digitizer:
             time.sleep(1) # wait one second
-            libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
+            code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
             time.sleep(0.1)
+            check_error_code(code)
         
         data = digitizer.get_waveforms()
         
