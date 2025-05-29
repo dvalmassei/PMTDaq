@@ -74,17 +74,18 @@ def check_error_code(code):
         raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
-def main():
+def main(dc_offset=-0.3, self_trigger_threshold=256, n_events=1000, low_HV=800, high_HV=1000, n_steps=10):
+    
     ########## setup ##########
     HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
     print('HV connected with:',HV.idn)
     digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
     configure_digitizer(digitizer)
+    digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
     
         ##### Set Self Trigger Threshold #####
     old_0x1080_value = digitizer.read_register(0x1080)
     print(f'Old value of register 0x1080: {old_0x1080_value:08X}')
-    self_trigger_threshold = 256
     digitizer.write_register(0x1080, self_trigger_threshold) #NOTE: this is a quick trick that we can use right now because we are only working with Ch.0 read register descriptions for more info
 
     
@@ -109,18 +110,18 @@ def main():
     ########## Turn on HV ##########
     print('Ramping voltage. This will take a moment...')
     HV.send_command('SET','ON',CH=0)
-    HV.channels[0].ramp_voltage(800, ramp_speed_VperSec=50) #Ramp voltage to 800 V and wait for HV to finish
+    HV.channels[0].ramp_voltage(low_HV, ramp_speed_VperSec=50) #Ramp voltage to 800 V and wait for HV to finish
     print('HV ready.')
     
     
     ########## Acquisition ##########
     n_events = 0
-    ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS = 1000
+    ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS = n_events
     data = [] #Pandas DataFrame
     
     with digitizer:
         print('Digitizer is enabled!')
-        for voltage in [800,1000,10]:
+        for voltage in [low_HV,high_HV,n_steps]:
             temp_data = [] #List
             n_events = 0
             HV.channels[0].ramp_voltage(voltage,ramp_speed_VperSec=15)
