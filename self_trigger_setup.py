@@ -157,6 +157,7 @@ def main():
         
     finally:
         ########## Turn off HV ##########
+        print('exiting')
         #HV.send_command('SET', 'VSET', CH=0, VAL=0) #set HV to 0V, but don't wait
         #HV.send_command('SET','OFF',CH=0) #HV will now disable after it ramps down, but we can keep working
         #print('HV turning off...')
