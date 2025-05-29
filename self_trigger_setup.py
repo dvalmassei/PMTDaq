@@ -47,7 +47,7 @@ def main():
     try:
         libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
         
-        HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM1') # Open the connection.
+        HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
         print('HV connected with:',HV.idn)
         digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
         #configure_digitizer(digitizer)
