@@ -65,12 +65,10 @@ def main():
         print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
         
         ########## Acquisition in Output Mode (default) w/ software trigger ##########
-        dc_offset = float(digitizer.get_channel_DC_offset(channel=0))
-        print(dc_offset)
+        dc_offset = float(digitizer.get_channel_DC_offset(channel=0)/0xFFFF)
         
         keep_going = True
         while keep_going:
-            digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
             print(f'Ch.0 DC Offset is {dc_offset}.')
             with digitizer:
                 time.sleep(1) # wait one second
@@ -100,6 +98,7 @@ def main():
                     break
                 elif (response == 'n'):
                     dc_offset = float(input(f'The current DC offset is {dc_offset}. Please enter the new DC offset:'))
+                    digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
                     keep_going = True #We need to change the DC offset and check again
                     break
                 else:
