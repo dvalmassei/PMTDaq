@@ -20,8 +20,8 @@ def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
    	#digitizer.set_acquisition_mode('sw_controlled')
    	#digitizer.set_ext_trigger_input_mode('disabled')
    	digitizer.write_register(0x811C, 0x000D0001) # Enable busy signal on GPO.
-   	#digitizer.set_fast_trigger_mode(enabled=True)
-   	#digitizer.set_fast_trigger_digitizing(enabled=True)
+   	digitizer.set_fast_trigger_mode(enabled=True)
+   	digitizer.set_fast_trigger_digitizing(enabled=True)
    	digitizer.enable_channels(group_1=True, group_2=False)
    	#digitizer.set_fast_trigger_threshold(22222)
    	#digitizer.set_fast_trigger_DC_offset(V=0)
