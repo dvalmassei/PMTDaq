@@ -65,11 +65,12 @@ def main():
         print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
         
         ########## Acquisition in Output Mode (default) w/ software trigger ##########
-        dc_offset = 0
+        dc_offset = digitizer.get_channel_DC_offset(channel=0)
         
         keep_going = True
         while keep_going:
             digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
+            print(f'Ch.0 DC Offset is {dc_offset}.')
             with digitizer:
                 time.sleep(1) # wait one second
                 code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
@@ -81,7 +82,9 @@ def main():
             ########## Data analysis and plotting ##########
             if len(data) == 0:
                 raise RuntimeError('Could not acquire any event. The reason may be that you dont have anything connected to the inputs of the digitizer, or a wrong trigger threshold and/or offset setting.')
-            
+            else:
+                print('Collected at least 1 event')
+                
             data = convert_dicitonaries_to_data_frame(data, 900)
             print(data)
             
