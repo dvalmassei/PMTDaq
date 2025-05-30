@@ -97,7 +97,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=100, n_events=1000, low_HV=1900,
     print(f'Old value of register 0x10A8: {old_0x10A8_value:08X}')
     new_0x10A8_value = edit_bit(old_0x10A8_value, 0, set_bit=True)
     print(f'Writing {new_0x10A8_value:08X} at register 0x10A8.')
-    digitizer.write_register(0x10A8,new_0x10A8_value)
+    digitizer.write_register(0x80A8,new_0x10A8_value)
     print(f'0x10A8 now: {digitizer.read_register(0x10A8):08X} ')
     print('Self trigger enabled for Ch.0')
     
