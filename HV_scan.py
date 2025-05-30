@@ -75,7 +75,7 @@ def check_error_code(code):
         raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
-def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=1000, low_HV=1900, high_HV=2000, n_steps=10):
+def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900, high_HV=2000, n_steps=10):
     
     libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
     
@@ -131,7 +131,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=1000, low_HV=1900
         check_error_code(code)
         for voltage in [low_HV,high_HV,n_steps]:
             temp_data = [] #List
-            n_events = 0
+            collected_events = 0
             HV.channels[0].ramp_voltage(voltage,ramp_speed_VperSec=15)
             v = HV.get_single_channel_parameter('VMON', 0)
             i = HV.get_single_channel_parameter('IMON', 0)
@@ -143,9 +143,9 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=1000, low_HV=1900
                 print(f'acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage} V...')
                 temp_data.append(wf)
                 
-            print(f'Collected {n_events} at {voltage} V')
+            print(f'Collected {collected_events} at {voltage} V')
             print('Now appending to DataFrame...')
-            data = pd.concat(data,convert_dicitonaries_to_data_frame(temp_data,voltage))
+            data = pd.concat([data,convert_dicitonaries_to_data_frame(temp_data,voltage)])
     
     print('Acquisition complete.')
     
