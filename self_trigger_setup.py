@@ -126,7 +126,7 @@ def main():
         data = convert_dicitonaries_to_data_frame(data, 900)
         print(data)
         
-        plt.plot(data['Time (s)'],(data['Amplitude (V)']-0.5)*4096)
+        plt.plot(data['Time (s)'],(data['Amplitude (V)']+0.5)*4096)
         plt.show()
         
         ########## Set Self Trigger Threshold ##########
