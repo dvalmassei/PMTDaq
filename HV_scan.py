@@ -122,7 +122,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900,
     ########## Acquisition ##########
     collected_events = 0
     ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS = n_events
-    data = [] #Pandas DataFrame
+    data = pd.DataFrame() #Pandas DataFrame
     
     with digitizer:
         print('Digitizer is enabled!')
