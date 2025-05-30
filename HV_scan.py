@@ -142,7 +142,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900,
                 wf = digitizer.get_waveforms()
                 collected_events += len(wf)
                 print(f'acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage} V...')
-                temp_data.append(wf)
+                temp_data += wf
                 
             print(f'Collected {collected_events} at {voltage} V')
             print('Now appending to DataFrame...')
