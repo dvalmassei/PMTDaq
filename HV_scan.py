@@ -122,6 +122,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=3700, n_events=1000, low_HV=1500
     data = [] #Pandas DataFrame
     
     with digitizer:
+        digitizer.start_acquisition()
         print('Digitizer is enabled!')
         for voltage in [low_HV,high_HV,n_steps]:
             temp_data = [] #List
@@ -142,6 +143,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=3700, n_events=1000, low_HV=1500
             print('Now appending to DataFrame...')
             data = pd.concat(data,convert_dicitonaries_to_data_frame(temp_data,voltage))
     
+    digitizer.stop_acquisition()
     print('Acquisition complete.')
     
     
