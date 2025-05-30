@@ -115,7 +115,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=256, n_events=1000, low_HV=1500,
     
     
     ########## Acquisition ##########
-    n_events = 0
+    collected_events = 0
     ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS = n_events
     data = [] #Pandas DataFrame
     
@@ -128,11 +128,11 @@ def main(dc_offset=-0.3, self_trigger_threshold=256, n_events=1000, low_HV=1500,
             v = HV.get_single_channel_parameter('VMON', 0)
             i = HV.get_single_channel_parameter('IMON', 0)
             print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
-            while n_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
+            while collected_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
                 print('requesting...')
                 time.sleep(.05) #ask for data every ~50 ms
                 wf = digitizer.get_waveforms()
-                n_events += len(wf)
+                collected_events += len(wf)
                 print(f'acquired {n_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage}...')
                 temp_data.append(wf)
                 
