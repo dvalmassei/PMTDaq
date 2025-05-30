@@ -110,7 +110,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=256, n_events=1000, low_HV=1500,
     ########## Turn on HV ##########
     print('Ramping voltage. This will take a moment...')
     HV.send_command('SET','ON',CH=0)
-    HV.channels[0].ramp_voltage(low_HV, ramp_speed_VperSec=50) #Ramp voltage to 800 V and wait for HV to finish
+    HV.channels[0].ramp_voltage(low_HV, ramp_speed_VperSec=50, timeout = low_HV/50 + 30) #Ramp voltage to 800 V and wait for HV to finish
     print('HV ready.')
     
     
@@ -129,6 +129,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=256, n_events=1000, low_HV=1500,
             i = HV.get_single_channel_parameter('IMON', 0)
             print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
             while n_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
+                print('requesting...')
                 time.sleep(.05) #ask for data every ~50 ms
                 wf = digitizer.get_waveforms()
                 n_events += len(wf)
