@@ -75,7 +75,7 @@ def check_error_code(code):
         raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
-def main(dc_offset=-0.3, self_trigger_threshold=3000, n_events=1000, low_HV=1900, high_HV=2000, n_steps=10):
+def main(dc_offset=-0.3, self_trigger_threshold=200, n_events=1000, low_HV=1900, high_HV=2000, n_steps=10):
     
     libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
     
@@ -140,7 +140,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=3000, n_events=1000, low_HV=1900
                 time.sleep(0.5) #ask for data every ~500 ms
                 wf = digitizer.get_waveforms()
                 collected_events += len(wf)
-                print(f'acquired {n_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage}...')
+                print(f'acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage}...')
                 temp_data.append(wf)
                 
             print(f'Collected {n_events} at {voltage} V')
