@@ -87,7 +87,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=3700, n_events=1000, low_HV=1500
     old_0x1080_value = digitizer.read_register(0x1080)
     print(f'Old value of register 0x1080: {old_0x1080_value:08X}')
     digitizer.write_register(0x1080, self_trigger_threshold) #NOTE: this is a quick trick that we can use right now because we are only working with Ch.0 read register descriptions for more info
-
+    print(f'0x1080 now: {digitizer.read_register(0x1080)} ')
     
         ##### Enable Self Trigger #####
     old_0x10A8_value = digitizer.read_register(0x10A8)
@@ -95,6 +95,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=3700, n_events=1000, low_HV=1500
     new_0x10A8_value = edit_bit(old_0x10A8_value, 0, set_bit=True)
     print(f'Writing {new_0x10A8_value:08X} at register 0x10A8.')
     digitizer.write_register(0x10A8,new_0x10A8_value)
+    print(f'0x10A8 now: {digitizer.read_register(0x10A8)} ')
     print('Self trigger enabled for Ch.0')
     
         ##### Revert to Output Mode #####
@@ -103,6 +104,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=3700, n_events=1000, low_HV=1500
     new_0x8000_value = edit_bit(old_0x8000_value, 13, set_bit=False)
     print(f'Writing {new_0x8000_value:08X} at register 0x8000.')
     digitizer.write_register(0x8000, new_0x8000_value)
+    print(f'0x8000 now: {digitizer.read_register(0x8000)} ')
     print('Ready for Self-Triggered acquisition in Output Mode')
     digitizer.set_max_num_events_BLT(1024) # Override the maximum number of events to be stored in the digitizer's self buffer.
 
