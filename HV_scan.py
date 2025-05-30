@@ -131,8 +131,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=10, n_events=1000, low_HV=1900, 
             i = HV.get_single_channel_parameter('IMON', 0)
             print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
             while collected_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
-                print('requesting...')
-                time.sleep(.05) #ask for data every ~50 ms
+                time.sleep(0.5) #ask for data every ~500 ms
                 wf = digitizer.get_waveforms()
                 collected_events += len(wf)
                 print(f'acquired {n_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage}...')
