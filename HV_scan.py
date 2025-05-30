@@ -74,7 +74,7 @@ def check_error_code(code):
         raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
-def main(dc_offset=-0.3, self_trigger_threshold=256, n_events=1000, low_HV=1500, high_HV=2000, n_steps=10):
+def main(dc_offset=-0.3, self_trigger_threshold=10, n_events=1000, low_HV=1500, high_HV=2000, n_steps=10):
     
     ########## setup ##########
     HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
