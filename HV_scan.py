@@ -37,6 +37,7 @@ def convert_dicitonaries_to_data_frame(waveforms:dict,voltage):
 	data = []
 	for n_event,event_waveforms in enumerate(waveforms):
 		for n_channel in event_waveforms:
+			print(n_channel,event_waveforms)
 			df = pd.DataFrame(event_waveforms[n_channel])
 			df['n_event'] = n_event
 			df['voltage'] = voltage
