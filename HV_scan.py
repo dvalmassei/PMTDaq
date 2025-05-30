@@ -11,6 +11,7 @@ from CAENpy.CAENDesktopHighVoltagePowerSupply import CAENDesktopHighVoltagePower
 import pandas as pd
 import numpy
 import time
+from ctypes import CDLL
 
 
 def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
@@ -76,6 +77,8 @@ def check_error_code(code):
     
 def main(dc_offset=-0.3, self_trigger_threshold=400, n_events=1000, low_HV=1900, high_HV=2000, n_steps=10):
     
+    libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
+    
     ########## setup ##########
     HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
     print('HV connected with:',HV.idn)
@@ -123,6 +126,9 @@ def main(dc_offset=-0.3, self_trigger_threshold=400, n_events=1000, low_HV=1900,
     
     with digitizer:
         print('Digitizer is enabled!')
+        code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
+        time.sleep(0.1)
+        check_error_code(code)
         for voltage in [low_HV,high_HV,n_steps]:
             temp_data = [] #List
             n_events = 0
