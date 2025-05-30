@@ -75,7 +75,7 @@ def check_error_code(code):
         raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
-def main(dc_offset=-0.3, self_trigger_threshold=2500, n_events=1000, low_HV=1900, high_HV=2000, n_steps=10):
+def main(dc_offset=-0.3, self_trigger_threshold=2800, n_events=1000, low_HV=1900, high_HV=2000, n_steps=10):
     
     libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
     
