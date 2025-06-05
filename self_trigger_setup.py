@@ -76,7 +76,7 @@ def main():
                 time.sleep(0.1)
                 check_error_code(code)
                 
-            data = digitizer.get_waveforms()
+            data = digitizer.get_waveforms()['CH0']
             
             ########## Data analysis and plotting ##########
             if len(data) == 0:

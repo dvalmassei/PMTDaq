@@ -9,9 +9,10 @@ Created on Thu May 22 07:50:58 2025
 from CAENpy.CAENDigitizer import CAEN_DT5742_Digitizer
 from CAENpy.CAENDesktopHighVoltagePowerSupply import CAENDesktopHighVoltagePowerSupply
 import pandas as pd
-import numpy
+import numpy as np
 import time
-from ctypes import CDLL
+#from ctypes import CDLL
+import sys
 
 
 def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
@@ -44,7 +45,7 @@ def convert_dicitonaries_to_data_frame(waveforms:dict,voltage):
 			df.set_index(['n_event','n_channel'], inplace=True)
 			data.append(df)
             
-	return pd.concat(data) 
+	return pd.concat(data)
 
 def edit_bit(hex_value, bit_position, set_bit=True):
     """
@@ -75,13 +76,17 @@ def check_error_code(code):
         raise RuntimeError(f'libCAENDigitizer has returned error code {code}.')
     
     
-def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900, high_HV=2000, n_steps=10):
+def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, high_HV=1200, n_steps=10):
     
-    libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
+    #libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
     
     ########## setup ##########
     HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
     print('HV connected with:',HV.idn)
+    print('Ramping voltage. This will take a moment...')
+    time.sleep(0.5)
+    HV.send_command('SET', 'VSET', CH=0, VAL=low_HV)
+    HV.send_command('SET','ON',CH=0)
     digitizer = CAEN_DT5742_Digitizer(LinkNum=0)
     configure_digitizer(digitizer)
     digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
@@ -113,8 +118,6 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900,
 
 
     ########## Turn on HV ##########
-    print('Ramping voltage. This will take a moment...')
-    HV.send_command('SET','ON',CH=0)
     HV.channels[0].ramp_voltage(low_HV, ramp_speed_VperSec=50, timeout = low_HV/50 + 30) #Ramp voltage to 800 V and wait for HV to finish
     print('HV ready.')
     
@@ -123,29 +126,41 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900,
     collected_events = 0
     ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS = n_events
     data = pd.DataFrame() #Pandas DataFrame
+    timeout = n_events*0.5 #timeout if it is taking more than 0.5s/event
     
-    with digitizer:
-        print('Digitizer is enabled!')
-        code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
-        time.sleep(0.1)
-        check_error_code(code)
-        for voltage in [low_HV,high_HV,n_steps]:
+   
+    
+    time.sleep(0.1)
+    voltages = np.linspace(low_HV,high_HV,n_steps,endpoint=True)
+    for i in range(voltages):
+        with digitizer:
+            print('Digitizer is enabled!')
             temp_data = [] #List
+            start_time = time.time()
             collected_events = 0
-            HV.channels[0].ramp_voltage(voltage,ramp_speed_VperSec=15)
+            HV.channels[0].ramp_voltage(voltages[i],ramp_speed_VperSec=15)
             v = HV.get_single_channel_parameter('VMON', 0)
             i = HV.get_single_channel_parameter('IMON', 0)
             print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
             while collected_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
-                time.sleep(0.5) #ask for data every ~500 ms
-                wf = digitizer.get_waveforms()
-                collected_events += len(wf)
-                print(f'acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltage} V...')
-                temp_data += wf
+                if time.time()-start_time > timeout:
+                    wf = digitizer.get_waveforms()
+                    collected_events += len(wf)
+                    print(f'Timeout: acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltages[i]} V...')
+                    temp_data += wf['CH0']
+                    break
+                else:
+                    time.sleep(0.5) #ask for data every ~500 ms
+                    wf = digitizer.get_waveforms()
+                    collected_events += len(wf)
+                    print(f'acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltages[i]} V...')
+                    temp_data += wf['CH0']
                 
-            print(f'Collected {collected_events} at {voltage} V')
-            print('Now appending to DataFrame...')
-            data = pd.concat([data,convert_dicitonaries_to_data_frame(temp_data,voltage)])
+        print(f'Collected {collected_events} at {voltages[i]} V.')
+        print('Digitizer Closed. Now converting dictionaries to DataFrame...')
+        temp_data = convert_dicitonaries_to_data_frame(temp_data,voltages[i])
+        print('merging dataframes...')
+        data = pd.concat([data,temp_data])
     
     print('Acquisition complete.')
     
@@ -157,5 +172,16 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=1900,
     ########## Save the data to a file ##########
     print(data)
     
+    print('Ramping HV down...')
+    HV.channels[0].ramp_voltage(0,ramp_speed_VperSec=50)
+    print('Done.')
+    
 if __name__ == '__main__':
-    main()
+    if len(sys.argv < 2):
+        main()
+    elif len(sys.argv == 7):
+        args = sys.argv[1:]
+        main(dc_offset=args[0], self_trigger_threshold=args[1], n_events=args[2], low_HV=args[3], high_HV=args[4], n_steps=args[5])
+    else:
+        print('Too many or too few arguments passed. Please pass dc offset, self trigger threshold, n_events per measurement, low HV, high HV, and n steps.')
+        
