@@ -163,6 +163,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
             temp_data = convert_dicitonaries_to_data_frame(temp_data,voltages[i])
             print('merging dataframes...')
             data.append(temp_data)
+            print('Increasing voltage...')
         else:
             print('No data. Increasing voltage...')
         
@@ -175,7 +176,8 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     HV.send_command('SET','OFF',CH=0) #HV will now disable after it ramps down, but we can keep working
     
     ########## Save the data to a file ##########
-    print(data)
+    print('Saving df as .csv')
+    data.to_csv('out.csv')
     
     print('Ramping HV down...')
     HV.channels[0].ramp_voltage(0,ramp_speed_VperSec=50, timeout = high_HV/50 + 30)
