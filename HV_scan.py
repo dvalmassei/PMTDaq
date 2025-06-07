@@ -133,7 +133,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     time.sleep(0.1)
     voltages = np.linspace(low_HV,high_HV,n_steps,endpoint=True)
     data = []
-    for i in range(len(voltages)):
+    for i in range(len(voltages) - 1):
         temp_data = [] #List
         start_time = time.time()
         collected_events = 0
@@ -168,7 +168,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
             print('No data. Increasing voltage...')
         
     print('Acquisition complete.')
-    pd.concat(data)
+    data = pd.concat(data)
     
     
     ########## Turn off HV ##########
