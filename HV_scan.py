@@ -181,7 +181,7 @@ if __name__ == '__main__':
         main()
     elif len(sys.argv) == 7:
         args = sys.argv[1:]
-        main(dc_offset=float(args[0]), self_trigger_threshold=int(args[1]), n_events=float(args[2]), low_HV=float(args[3]), high_HV=float(args[4]), n_steps=float(args[5]))
+        main(dc_offset=float(args[0]), self_trigger_threshold=int(args[1]), n_events=float(args[2]), low_HV=float(args[3]), high_HV=float(args[4]), n_steps=int(args[5]))
     else:
         print('Too many or too few arguments passed. Please pass dc offset, self trigger threshold, n_events per measurement, low HV, high HV, and n steps.')
         
