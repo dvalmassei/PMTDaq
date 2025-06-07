@@ -132,6 +132,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     
     time.sleep(0.1)
     voltages = np.linspace(low_HV,high_HV,n_steps,endpoint=True)
+    data = []
     for i in range(len(voltages)):
         temp_data = [] #List
         start_time = time.time()
@@ -161,11 +162,12 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
             print('Digitizer Closed. Now converting dictionaries to DataFrame...')
             temp_data = convert_dicitonaries_to_data_frame(temp_data,voltages[i])
             print('merging dataframes...')
-            data = pd.concat([data,temp_data])
+            data.append(temp_data)
         else:
             print('No data. Increasing voltage...')
         
     print('Acquisition complete.')
+    pd.concat(data)
     
     
     ########## Turn off HV ##########
@@ -176,7 +178,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     print(data)
     
     print('Ramping HV down...')
-    HV.channels[0].ramp_voltage(0,ramp_speed_VperSec=50)
+    HV.channels[0].ramp_voltage(0,ramp_speed_VperSec=50, timeout = high_HV/50 + 30)
     print('Done.')
     
 if __name__ == '__main__':
