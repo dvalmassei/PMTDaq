@@ -157,11 +157,14 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
                     temp_data += wf
                 
         print(f'Collected {collected_events} at {voltages[i]} V.')
-        print('Digitizer Closed. Now converting dictionaries to DataFrame...')
-        temp_data = convert_dicitonaries_to_data_frame(temp_data,voltages[i])
-        print('merging dataframes...')
-        data = pd.concat([data,temp_data])
-    
+        if len(temp_data) > 0:
+            print('Digitizer Closed. Now converting dictionaries to DataFrame...')
+            temp_data = convert_dicitonaries_to_data_frame(temp_data,voltages[i])
+            print('merging dataframes...')
+            data = pd.concat([data,temp_data])
+        else:
+            print('No data. Increasing voltage...')
+        
     print('Acquisition complete.')
     
     
