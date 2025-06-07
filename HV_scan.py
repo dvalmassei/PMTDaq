@@ -132,7 +132,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     
     time.sleep(0.1)
     voltages = np.linspace(low_HV,high_HV,n_steps,endpoint=True)
-    for i in range(voltages):
+    for i in range(len(voltages)):
         with digitizer:
             print('Digitizer is enabled!')
             temp_data = [] #List
@@ -140,8 +140,8 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
             collected_events = 0
             HV.channels[0].ramp_voltage(voltages[i],ramp_speed_VperSec=15)
             v = HV.get_single_channel_parameter('VMON', 0)
-            i = HV.get_single_channel_parameter('IMON', 0)
-            print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
+            current = HV.get_single_channel_parameter('IMON', 0)
+            print(f'Voltage measured at {v} V and is drawing {current} uA and and reset event count...')
             while collected_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
                 if time.time()-start_time > timeout:
                     wf = digitizer.get_waveforms()
