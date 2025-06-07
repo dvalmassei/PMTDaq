@@ -147,14 +147,14 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
                     wf = digitizer.get_waveforms()
                     collected_events += len(wf)
                     print(f'Timeout: acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltages[i]} V...')
-                    temp_data += wf['CH0']
+                    temp_data += wf
                     break
                 else:
                     time.sleep(0.5) #ask for data every ~500 ms
                     wf = digitizer.get_waveforms()
                     collected_events += len(wf)
                     print(f'acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltages[i]} V...')
-                    temp_data += wf['CH0']
+                    temp_data += wf
                 
         print(f'Collected {collected_events} at {voltages[i]} V.')
         print('Digitizer Closed. Now converting dictionaries to DataFrame...')
