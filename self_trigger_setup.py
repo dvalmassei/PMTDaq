@@ -57,7 +57,7 @@ def main():
         ########## Turn on HV ##########
         print('Ramping voltage. This will take a moment...')
         HV.send_command('SET','ON',CH=0)
-        HV.channels[0].ramp_voltage(1800, ramp_speed_VperSec=50, timeout = (900/50 + 30)) #Ramp voltage to 800 V and wait for HV to finish
+        HV.channels[0].ramp_voltage(1000, ramp_speed_VperSec=50, timeout = (900/50 + 30)) #Ramp voltage to 800 V and wait for HV to finish
         print('HV ready.')
         
         v = HV.get_single_channel_parameter('VMON', 0) #read output voltage from HV supply
