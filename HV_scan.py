@@ -11,7 +11,7 @@ from CAENpy.CAENDesktopHighVoltagePowerSupply import CAENDesktopHighVoltagePower
 import pandas as pd
 import numpy as np
 import time
-from ctypes import CDLL
+#from ctypes import CDLL
 import sys
 
 
@@ -78,7 +78,7 @@ def check_error_code(code):
     
 def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, high_HV=1200, n_steps=10):
     
-    libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
+    #libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
     
     ########## setup ##########
     HV = CAENDesktopHighVoltagePowerSupply(port='/dev/ttyACM0') # Open the connection.
@@ -144,9 +144,6 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
             print(f'Voltage measured at {v} V and is drawing {current} uA and and reset event count...')
             while collected_events < ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS:
                 if time.time()-start_time > timeout:
-                    code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
-                    time.sleep(0.1)
-                    check_error_code(code)
                     wf = digitizer.get_waveforms()
                     collected_events += len(wf)
                     print(f'Timeout: acquired {collected_events} of {ACQUIRE_AT_LEAST_THIS_NUMBER_OF_EVENTS} at {voltages[i]} V...')
