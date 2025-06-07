@@ -177,9 +177,9 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     print('Done.')
     
 if __name__ == '__main__':
-    if len(sys.argv < 2):
+    if len(sys.argv) < 2:
         main()
-    elif len(sys.argv == 7):
+    elif len(sys.argv) == 7:
         args = sys.argv[1:]
         main(dc_offset=float(args[0]), self_trigger_threshold=float(args[1]), n_events=float(args[2]), low_HV=float(args[3]), high_HV=float(args[4]), n_steps=float(args[5]))
     else:
