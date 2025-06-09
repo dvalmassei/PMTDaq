@@ -12,10 +12,9 @@ import numpy as np
 
 data = pd.read_csv('out.csv')
 
-plt.plot(data[data['n_channel'] == 'CH0']['Amplitude (V)'][:])
-plt.show()
-
 data = data[data['n_channel'] == 'CH0']
+plt.plot(data['Amplitude (V)'][:])
+plt.show()
 
 #print(data[data['n_channel'] == 'CH0'])
 
