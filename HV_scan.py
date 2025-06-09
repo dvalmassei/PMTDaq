@@ -177,7 +177,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     
     ########## Save the data to a file ##########
     print('Saving df as .csv')
-    data[data['n_channel'] == 'CH0'].to_csv('out.csv')
+    data.to_csv('out.csv')
     
     print('Ramping HV down...')
     HV.channels[0].ramp_voltage(0,ramp_speed_VperSec=50, timeout = high_HV/50 + 30)
