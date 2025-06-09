@@ -177,7 +177,14 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     
     ########## Save the data to a file ##########
     print('Saving df as .csv')
-    data.to_csv('out.csv')
+    
+    chunk_size = 100000  # Adjust chunk size as needed
+    for i in range(0, len(data), chunk_size):
+        df_chunk = data[i:i + chunk_size]
+        if i == 0:
+            df_chunk.to_csv('output.csv', mode='w', header=True, index=False)
+        else:
+            df_chunk.to_csv('output.csv', mode='a', header=False, index=False)
     
     print('Ramping HV down...')
     HV.channels[0].ramp_voltage(0,ramp_speed_VperSec=50, timeout = high_HV/50 + 30)
