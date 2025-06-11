@@ -37,13 +37,12 @@ def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
 def convert_dicitonaries_to_data_frame(waveforms:dict,voltage):
 	data = []
 	for n_event,event_waveforms in enumerate(waveforms):
-		for n_channel in event_waveforms:
-			df = pd.DataFrame(event_waveforms[n_channel])
-			df['n_event'] = n_event
-			df['voltage'] = voltage
-			df['n_channel'] = n_channel
-			df.set_index(['n_event','n_channel'], inplace=True)
-			data.append(df)
+ 		df = pd.DataFrame(event_waveforms['CH0'])
+ 		df['n_event'] = n_event
+ 		df['voltage'] = voltage
+ 		df['n_channel'] = 'CH0'
+ 		df.set_index(['n_event','n_channel'], inplace=True)
+ 		data.append(df)
             
 	return pd.concat(data)
 
@@ -134,7 +133,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
     voltages = np.linspace(low_HV,high_HV,n_steps,endpoint=True)
     data = []
     for i in range(len(voltages)):
-        temp_data = [] #List
+        temp_data = [] #List of dict
         start_time = time.time()
         collected_events = 0
         HV.channels[0].ramp_voltage(voltages[i],ramp_speed_VperSec=15)
@@ -161,7 +160,7 @@ def main(dc_offset=-0.3, self_trigger_threshold=2870, n_events=100, low_HV=800, 
         if len(temp_data) > 0:
             print('Digitizer Closed. Now converting dictionaries to DataFrame...')
             temp_data = convert_dicitonaries_to_data_frame(temp_data,voltages[i])
-            print('merging dataframes...')
+            print('Appending lists...')
             data.append(temp_data)
             print('Increasing voltage...')
         else:
