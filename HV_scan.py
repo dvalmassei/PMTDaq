@@ -37,12 +37,13 @@ def configure_digitizer(digitizer:CAEN_DT5742_Digitizer):
 def convert_dicitonaries_to_data_frame(waveforms:dict,voltage):
 	data = []
 	for n_event,event_waveforms in enumerate(waveforms):
- 		df = pd.DataFrame(event_waveforms['CH0'])
- 		df['n_event'] = n_event
- 		df['voltage'] = voltage
- 		df['n_channel'] = 'CH0'
- 		df.set_index(['n_event','n_channel'], inplace=True)
- 		data.append(df)
+		for n_channel in event_waveforms:
+ 			df = pd.DataFrame(event_waveforms[n_channel])
+ 			df['n_event'] = n_event
+ 			df['voltage'] = voltage
+ 			df['n_channel'] = n_channel
+ 			df.set_index(['n_event','n_channel'], inplace=True)
+ 			data.append(df)
             
 	return pd.concat(data)
 
