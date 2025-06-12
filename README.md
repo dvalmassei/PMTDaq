@@ -2,12 +2,12 @@
 Python scripts for control of the CAEN DT1470 HV Supply and CAEN 5742 Digitzer for self triggered gain measurements
 
 ## Special Dependencies
--pySerial [https://pypi.org/project/pyserial/]
+-[pySerial](https://pypi.org/project/pyserial/)
 ```
 pip install pyserial
 ```
 
--CAENpy
+-[CAENpy](https://github.com/SengerM/CAENpy)
     +this is a python wrapper for the CAEN Digitizer library and communication with CAEN power supplies. You will also need to install libraries and driver necessary for the power supplies and digitzers.
 ```
 pip install git+https://github.com/SengerM/CAENpy
