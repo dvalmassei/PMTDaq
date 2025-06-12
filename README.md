@@ -36,12 +36,12 @@ python HV_scan_smaller_data.py <dc_offset> <trigger_threshold> <n_events> <low_H
 
 In either case the inputs are optional, though all inouts are required if the user wants to change any. `HV_scan.py` will produce a .csv called 'out.csv' with all 8 channels in the first register shown. This is often unnecessary for a gain measurement, so I also provide `HV_smaller_data.py` which only prints Ch.0 to the .csv.
 Variables:
-    -dc_offset: DC_offset for Ch.0 in V. Default: -0.3
-    -self_trigger_threshold: trigger threshold in ADC units. Default: 2870
-    -n_events: number of events per voltage. Default:100
-    -low_HV: minimun voltage for the scan. Default:800
-    -high_HV: maximum voltage for the scan. Default:1200
-    -n_steps: number of divisions between low_HV and high_HV. Default:10
+- dc_offset: DC_offset for Ch.0 in V. Default: -0.3
+- self_trigger_threshold: trigger threshold in ADC units. Default: 2870
+- n_events: number of events per voltage. Default:100
+- low_HV: minimun voltage for the scan. Default:800
+- high_HV: maximum voltage for the scan. Default:1200
+- n_steps: number of divisions between low_HV and high_HV. Default:10
 
 ```
 python analysis.py <filename>
@@ -49,4 +49,4 @@ python analysis.py <filename>
 
 Offline analysis of the .csv created by `HV_scan.py`. Provides plots of 'Amplitude (V)' vs. index, pedestal corrected voltage of first event, histogram of the gain on an event-by-event basis, gain vs. HV in both linear and log, and 'gain_table.csv' ready for integration as a table in ELOG.
 Variables:
-    -filename: name of .csv for analysis. Defalt: 'out.csv'
+- filename: name of .csv for analysis. Defalt: 'out.csv'
