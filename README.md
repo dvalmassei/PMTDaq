@@ -16,7 +16,9 @@ pip install git+https://github.com/SengerM/CAENpy
 ## Usage
 See [CAENpy](https://github.com/SengerM/CAENpy) for examples of how to interact with the HV Supply and Digitizer.
 
-1. When setting up the digitizer to self tirgger, run
+1.
+
+When setting up the digitizer to self tirgger, run
 ```
 python self_trigger_setup.py
 ```
@@ -24,7 +26,9 @@ python self_trigger_setup.py
 This script sets up the digitizer in a default configuration, then supplies 1000V with the HV Supply. 1 event is then aquired with the software trigger and is plotted, so the user may see the offset for each channel. The user is then queried to change the DC offset for Ch. 0 in a loop until a satisfactory offset is achieved. Finally, the acquisition mode is changed to the "transparent" mode and another acquisition is made. The user can then determine the proper trigger threshold for their application. It is useful to make note of the DC offset and trigger threshold. You will use these values when calling `HV_scan.py`.
 
 ---
-2. Now the user is ready to call
+2.
+
+Now the user is ready to call
 ```
 python HV_scan.py <dc_offset> <trigger_threshold> <n_events> <low_HV> <high_hv> <n_steps>
 ```
@@ -45,11 +49,12 @@ Variables:
 - high_HV: maximum voltage for the scan. Default: 1200
 - n_steps: number of divisions between low_HV and high_HV. Default: 10
 
+---
+3.
 ```
 python analysis.py <filename>
 ```
----
-3. Offline analysis of the .csv created by `HV_scan.py`. Provides plots of 'Amplitude (V)' vs. index, pedestal corrected voltage of first event, histogram of the gain on an event-by-event basis, gain vs. HV in both linear and log, and 'gain_table.csv' ready for integration as a table in ELOG.
+Offline analysis of the .csv created by `HV_scan.py`. Provides plots of 'Amplitude (V)' vs. index, pedestal corrected voltage of first event, histogram of the gain on an event-by-event basis, gain vs. HV in both linear and log, and 'gain_table.csv' ready for integration as a table in ELOG.
 
 Variables:
 - filename: name of .csv for analysis. Default: 'out.csv'
