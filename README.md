@@ -8,7 +8,7 @@ pip install pyserial
 ```
 
 -[CAENpy](https://github.com/SengerM/CAENpy)
-    +this is a python wrapper for the CAEN Digitizer library and communication with CAEN power supplies. You will also need to install libraries and driver necessary for the power supplies and digitzers.
+- this is a python wrapper for the CAEN Digitizer library and communication with CAEN power supplies. You will also need to install libraries and driver necessary for the power supplies and digitzers.
 ```
 pip install git+https://github.com/SengerM/CAENpy
 ```
