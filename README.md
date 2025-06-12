@@ -22,7 +22,8 @@ python self_trigger_setup.py
 ```
 
 This script sets up the digitizer in a default configuration, then supplies 1000V with the HV Supply. 1 event is then aquired with the software trigger and is plotted, so the user may see the offset for each channel. The user is then queried to change the DC offset for Ch. 0 in a loop until a satisfactory offset is achieved. Finally, the acquisition mode is changed to the "transparent" mode and another acquisition is made. The user can then determine the proper trigger threshold for their application. It is useful to make note of the DC offset and trigger threshold. You will use these values when calling `HV_scan.py`.
-**---
+
+---
 2. Now the user is ready to call
 ```
 python HV_scan.py <dc_offset> <trigger_threshold> <n_events> <low_HV> <high_hv> <n_steps>
