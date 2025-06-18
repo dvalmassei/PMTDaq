@@ -12,7 +12,7 @@ from ctypes import CDLL
 import pandas as pd
 import numpy
 import time
-from HV_scan import configure_digitizer, convert_dicitonaries_to_data_frame
+from HV_scan_smaller_data import configure_digitizer, convert_dicitonaries_to_data_frame
 import matplotlib.pyplot as plt
 
 def edit_bit(hex_value, bit_position, set_bit=True):
