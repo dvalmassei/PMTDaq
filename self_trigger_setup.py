@@ -10,7 +10,7 @@ from CAENpy.CAENDigitizer import CAEN_DT5742_Digitizer
 from CAENpy.CAENDesktopHighVoltagePowerSupply import CAENDesktopHighVoltagePowerSupply
 from ctypes import CDLL
 import pandas as pd
-import numpy
+import numpy as np
 import time
 from HV_scan_smaller_data import configure_digitizer, convert_dicitonaries_to_data_frame
 import matplotlib.pyplot as plt
@@ -65,10 +65,10 @@ def main():
         print(f'Voltage measured at {v} V and is drawing {i} uA and and reset event count...')
         
         ########## Acquisition in Output Mode (default) w/ software trigger ##########
-        dc_offset = float(digitizer.get_channel_DC_offset(channel=0)/0xFFFF)
         
         keep_going = True
         while keep_going:
+            dc_offset = float(digitizer.get_channel_DC_offset(channel=0)/0xFFFF)
             print(f'Ch.0 DC Offset is {dc_offset}.')
             with digitizer:
                 time.sleep(1) # wait one second
@@ -89,7 +89,11 @@ def main():
             
             plt.plot(data['Time (s)'],data['Amplitude (V)'])
             plt.show()
-        
+            
+            avg_voltage = np.mean(data['Amplitude (V)'])
+            print(f'Average voltage: {avg_voltage} V')
+            print(f'Recommended DC_offset:{dc_offset - avg_voltage} V')
+            
             ##### Check if the baseline looks good #####
             while True:
                 response = input('Is the baseline within the upper 25% of the ADC range? (Y/n)')
