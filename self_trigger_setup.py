@@ -136,6 +136,9 @@ def main():
         ########## Set Self Trigger Threshold ##########
         old_0x1080_value = digitizer.read_register(0x1080)
         print(f'Old value of register 0x1080: {old_0x1080_value:08X}')
+        adc_avg = np.mean((data['Amplitude (V)']+0.5)*4096)
+        adc_std = np.std((data['Amplitude (V)']+0.5)*4096)
+        print(f'Average ADC: {adc_avg}, ADC Standard Dev:{adc_std}')
         self_trigger_threashold = int(input('Please input the threshold value in decimal [0:4095]:'))
         digitizer.write_register(0x1080, self_trigger_threashold) #NOTE: this is a quick trick that we can use right now because we are only working with Ch.0 read register descriptions for more info
         
