@@ -92,7 +92,7 @@ def main():
             
             avg_voltage = np.mean(data['Amplitude (V)'])
             print(f'Average voltage: {avg_voltage} V')
-            print(f'Recommended DC_offset:{dc_offset - avg_voltage} V')
+            print(f'Recommended DC_offset:{0.45 - dc_offset - avg_voltage} V')
             
             ##### Check if the baseline looks good #####
             while True:
@@ -139,6 +139,8 @@ def main():
         adc_avg = np.mean((data['Amplitude (V)'][512:]+0.5)*4096)
         adc_std = np.std((data['Amplitude (V)'][512:]+0.5)*4096)
         print(f'Average ADC: {adc_avg}, ADC Standard Dev:{adc_std}')
+        rec_trig_threshold = int(adc_avg - 2*adc_std)
+        print(f'Recommended Trigger Threshold: {rec_trig_threshold}')
         self_trigger_threashold = int(input('Please input the threshold value in decimal [0:4095]:'))
         digitizer.write_register(0x1080, self_trigger_threashold) #NOTE: this is a quick trick that we can use right now because we are only working with Ch.0 read register descriptions for more info
         
