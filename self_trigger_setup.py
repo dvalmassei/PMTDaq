@@ -68,8 +68,8 @@ def main():
         
         keep_going = True
         while keep_going:
-            dc_offset = float(digitizer.get_channel_DC_offset(channel=0)/0xFFFF)
-            print(f'Ch.0 DC Offset is {dc_offset}.')
+            dc_offset_mes = float(digitizer.get_channel_DC_offset(channel=0)/0xFFFF) - 0.5
+            print(f'Ch.0 DC Offset is {dc_offset_mes}.')
             with digitizer:
                 time.sleep(1) # wait one second
                 code = libCAENDigitizer.CAEN_DGTZ_SendSWtrigger(digitizer._get_handle()) #trigger the digitizer with the software
@@ -92,7 +92,7 @@ def main():
             
             avg_voltage = np.mean(data['Amplitude (V)'])
             print(f'Average voltage: {avg_voltage} V')
-            print(f'Recommended DC_offset:{0.45 - dc_offset - avg_voltage} V')
+            print(f'Recommended DC_offset:{-0.45 - dc_offset_mes + avg_voltage} V')
             
             ##### Check if the baseline looks good #####
             while True:
@@ -101,8 +101,8 @@ def main():
                     keep_going = False #All is good! We will move on
                     break
                 elif (response == 'n'):
-                    dc_offset = float(input(f'The current DC offset is {dc_offset}. Please enter the new DC offset:'))
-                    digitizer.set_channel_DC_offset(channel=0,V=dc_offset) #set the DC offset to 0 V
+                    dc_offset_req = float(input(f'The current DC offset is {dc_offset_mes}. Please enter the new DC offset:'))
+                    digitizer.set_channel_DC_offset(channel=0,V=dc_offset_req) #set the DC offset to 0 V
                     keep_going = True #We need to change the DC offset and check again
                     break
                 else:
