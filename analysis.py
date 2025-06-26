@@ -10,12 +10,12 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import sys
-import mplhep as hep
+#import mplhep as hep
 
 
 
 def main(filename='out.csv'):
-    plt.style.use(hep.style.LHCb2)
+    #plt.style.use(hep.style.LHCb2)
     gain = 1 #additional gain provided by base or circuit
     data = pd.read_csv(filename)
     
