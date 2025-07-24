@@ -34,7 +34,7 @@ def convert_dicitonaries_to_data_frame(waveforms:dict,channels):
         
 def main():
     channels = [0,1]
-    dc_offset = [0,0]
+    dc_offset = [-0.3,-0.3]
     n_events = 10000
 
     #libCAENDigitizer = CDLL('/usr/lib/libCAENDigitizer.so')
@@ -46,7 +46,7 @@ def main():
     digitizer.set_fast_trigger_threshold(22222)
     digitizer.set_fast_trigger_DC_offset(V=0)
     for i in range(len(channels)):
-        digitizer.set_channel_DC_offset(channel=channels[i],V=dc_offset[i]) #set the DC offset to 0 V
+        digitizer.set_channel_DC_offset(channel=channels[i],V=dc_offset[i])
 
     
     ########## Output Mode ##########
